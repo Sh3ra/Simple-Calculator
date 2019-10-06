@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.junit.Assert;
 
-import eg.edu.alexu.csd.oop.calculator.Calculator;
+import eg.edu.alexu.csd.oop.calculator.cs76.Calculator;
 import eg.edu.alexu.csd.oop.test.ReflectionHelper;
 
 public class IntegrationTest {

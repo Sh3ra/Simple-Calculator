@@ -3,7 +3,7 @@ package eg.edu.alexu.csd.oop.test.calculator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import eg.edu.alexu.csd.oop.calculator.Calculator;
+import eg.edu.alexu.csd.oop.calculator.cs76.Calculator;
 import eg.edu.alexu.csd.oop.test.TestRunner;
 
 public class SanityTest {
