@@ -20,7 +20,7 @@ import static javafx.application.Application.launch;
 
 
 public class Main extends Application implements Calculator  {
-    String res;
+    private String res;
     @Override
     public void input(String s) {
         String[] arr;
@@ -95,26 +95,9 @@ public class Main extends Application implements Calculator  {
     public static void main(String[] args) {
         launch(args);
     }
-    Button Equal;
-    Button Add;
-    Button Subtrac;
-    Button Multiply;
-    Button Divide;
-    Button One;
-    Button Two;
-    Button Three;
-    Button Four;
-    Button Five;
-    Button Six;
-    Button Seven;
-    Button Eight;
-    Button Nine;
-    Button Zero;
-    Button Point;
-    Button ClearALL;
-    Button Del;
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Calculator");
         Label input=new Label("0");
         input.setMinWidth(Region.USE_PREF_SIZE);
@@ -124,30 +107,30 @@ public class Main extends Application implements Calculator  {
         input.setFont(new Font("Arial", 50));
         input.setTextFill(Color.web("#ffffff"));
 
-        ClearALL =new Button("AC");
-        ClearALL.setFont(new Font("Arial", 20));
-        GridPane.setConstraints(ClearALL,0,4);
-        ClearALL.setOnAction(e->input.setText("0"));
-        Del=new Button("Del");
-        Del.setFont(new Font("Arial", 20));
-        GridPane.setConstraints(Del,5,4);
-        Del.setOnAction(e->{
-            if(input.getText()!="")
+        Button clearALL = new Button("AC");
+        clearALL.setFont(new Font("Arial", 20));
+        GridPane.setConstraints(clearALL,0,4);
+        clearALL.setOnAction(e->input.setText("0"));
+        Button del = new Button("Del");
+        del.setFont(new Font("Arial", 20));
+        GridPane.setConstraints(del,5,4);
+        del.setOnAction(e->{
+            if(!input.getText().equals(""))
             {
                 String temp="";
                 for(int i=0;i<input.getText().length()-1;i++)
                 {
                     temp=temp+input.getText().charAt(i);
                 }
-                if(temp=="")
+                if(temp.equals(""))
                     temp+="0";
                 input.setText(temp);
             }
         });
-        Point = new Button(".");
-        Point.setFont(new Font("Arial", 30));
-        GridPane.setConstraints(Point,10,16);
-        Point.setOnAction(e->{
+        Button point = new Button(".");
+        point.setFont(new Font("Arial", 30));
+        GridPane.setConstraints(point,10,16);
+        point.setOnAction(e->{
             if(input.getText().charAt(input.getText().length()-1)=='+'||input.getText().charAt(input.getText().length()-1)=='-'||input.getText().charAt(input.getText().length()-1)=='X'||input.getText().charAt(input.getText().length()-1)=='/')
             {
                 input.setText(input.getText()+"0.");
@@ -156,11 +139,11 @@ public class Main extends Application implements Calculator  {
                 input.setText(input.getText()+".");
             else AlertBox.display("Mate","How many decimal points do you expect in a number!?");
         });
-        Equal=new Button();
-        GridPane.setConstraints(Equal,15,16);
-        Equal.setText("=");
-        Equal.setFont(new Font("Arial", 30));
-        Equal.setOnAction(e -> {
+        Button equal = new Button();
+        GridPane.setConstraints(equal,15,16);
+        equal.setText("=");
+        equal.setFont(new Font("Arial", 30));
+        equal.setOnAction(e -> {
             if(input.getText().charAt(input.getText().length()-1)=='+'||input.getText().charAt(input.getText().length()-1)=='-'||input.getText().charAt(input.getText().length()-1)=='X'||input.getText().charAt(input.getText().length()-1)=='/')
                 AlertBox.display("Hey","Where is the second operand!?");
             else if(input.getText().contains("/"))
@@ -195,11 +178,11 @@ public class Main extends Application implements Calculator  {
                 input.setText(getResult());
             }
         });
-        Add=new Button();
-        Add.setFont(new Font("Arial", 30));
-        GridPane.setConstraints(Add,15,13);
-        Add.setText("+");
-        Add.setOnAction(e -> {
+        Button add = new Button();
+        add.setFont(new Font("Arial", 30));
+        GridPane.setConstraints(add,15,13);
+        add.setText("+");
+        add.setOnAction(e -> {
             if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
             {
                 if(input.getText().charAt(input.getText().length()-1)=='.')
@@ -208,11 +191,11 @@ public class Main extends Application implements Calculator  {
             }
             else AlertBox.display("Dude","One Operation at a time");
         });
-        Subtrac=new Button();
-        Subtrac.setFont(new Font("Arial", 30));
-        GridPane.setConstraints(Subtrac,15,10);
-        Subtrac.setText("-");
-        Subtrac.setOnAction(e -> {
+        Button subtrac = new Button();
+        subtrac.setFont(new Font("Arial", 30));
+        GridPane.setConstraints(subtrac,15,10);
+        subtrac.setText("-");
+        subtrac.setOnAction(e -> {
             if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
             {
                 if(input.getText().charAt(input.getText().length()-1)=='.')
@@ -221,11 +204,11 @@ public class Main extends Application implements Calculator  {
             }
             else AlertBox.display("Dude","One Operation at a time");
         });
-        Multiply=new Button();
-        GridPane.setConstraints(Multiply,15,7);
-        Multiply.setText("X");
-        Multiply.setFont(new Font("Arial", 30));
-        Multiply.setOnAction(e -> {
+        Button multiply = new Button();
+        GridPane.setConstraints(multiply,15,7);
+        multiply.setText("X");
+        multiply.setFont(new Font("Arial", 30));
+        multiply.setOnAction(e -> {
             if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
             {
                 if(input.getText().charAt(input.getText().length()-1)=='.')
@@ -234,10 +217,10 @@ public class Main extends Application implements Calculator  {
             }
             else AlertBox.display("Dude","One Operation at a time");
         });
-        Divide=new Button();
-        GridPane.setConstraints(Divide,15,4);
-        Divide.setText("/");
-        Divide.setOnAction(e -> {
+        Button divide = new Button();
+        GridPane.setConstraints(divide,15,4);
+        divide.setText("/");
+        divide.setOnAction(e -> {
             if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
             {
                 if(input.getText().charAt(input.getText().length()-1)=='.')
@@ -246,116 +229,116 @@ public class Main extends Application implements Calculator  {
             }
             else AlertBox.display("Dude","One Operation at a time");
         });
-        Divide.setFont(new Font("Arial", 30));
-        Zero = new Button();
-        Zero.setFont(new Font("Arial", 30));
-        GridPane.setConstraints(Zero,5,16);
-        Zero.setText("0");
-        Zero.setOnAction(e->{
-        if(input.getText()!="0")
+        divide.setFont(new Font("Arial", 30));
+        Button zero = new Button();
+        zero.setFont(new Font("Arial", 30));
+        GridPane.setConstraints(zero,5,16);
+        zero.setText("0");
+        zero.setOnAction(e->{
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"0");
         }
         });
-        One = new Button();
-        GridPane.setConstraints(One,0,13);
-        One.setText("1");
-        One.setOnAction(e->{
+        Button one = new Button();
+        GridPane.setConstraints(one,0,13);
+        one.setText("1");
+        one.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"1");
         }
         else input.setText("1");
         });
-        One.setFont(new Font("Arial", 30));
+        one.setFont(new Font("Arial", 30));
 
-        Two = new Button();
-        GridPane.setConstraints(Two,5,13);
-        Two.setText("2");
-        Two.setOnAction(e->{
+        Button two = new Button();
+        GridPane.setConstraints(two,5,13);
+        two.setText("2");
+        two.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"2");
         }
         else input.setText("2");
         });
-        Two.setFont(new Font("Arial", 30));
+        two.setFont(new Font("Arial", 30));
 
-        Three= new Button();
-        GridPane.setConstraints(Three,10,13);
-        Three.setText("3");
-        Three.setOnAction(e->{
+        Button three = new Button();
+        GridPane.setConstraints(three,10,13);
+        three.setText("3");
+        three.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"3");
         }
         else input.setText("3");
         });
-        Three.setFont(new Font("Arial", 30));
+        three.setFont(new Font("Arial", 30));
 
-        Four = new Button();
-        Four.setText("4");
-        GridPane.setConstraints(Four,0,10);
-        Four.setOnAction(e->{
+        Button four = new Button();
+        four.setText("4");
+        GridPane.setConstraints(four,0,10);
+        four.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"4");
         }
         else input.setText("4");
         });
-        Four.setFont(new Font("Arial", 30));
+        four.setFont(new Font("Arial", 30));
 
-        Five = new Button();
-        GridPane.setConstraints(Five,5,10);
-        Five.setText("5");
-        Five.setFont(new Font("Arial", 30));
+        Button five = new Button();
+        GridPane.setConstraints(five,5,10);
+        five.setText("5");
+        five.setFont(new Font("Arial", 30));
 
-        Five.setOnAction(e->{
+        five.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"5");
         }
         else input.setText("5");
         });
-        Six = new Button();
-        Six.setFont(new Font("Arial", 30));
+        Button six = new Button();
+        six.setFont(new Font("Arial", 30));
 
-        GridPane.setConstraints(Six,10,10);
-        Six.setText("6");
-        Six.setOnAction(e->{
+        GridPane.setConstraints(six,10,10);
+        six.setText("6");
+        six.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"6");
         }
         else input.setText("6");
         });
-        Seven = new Button();
-        GridPane.setConstraints(Seven,0,7);
-        Seven.setText("7");
-        Seven.setFont(new Font("Arial", 30));
-        Seven.setOnAction(e->{
+        Button seven = new Button();
+        GridPane.setConstraints(seven,0,7);
+        seven.setText("7");
+        seven.setFont(new Font("Arial", 30));
+        seven.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"7");
         }
         else input.setText("7");
         });
-        Eight = new Button();
-        GridPane.setConstraints(Eight,5,7);
-        Eight.setText("8");
-        Eight.setOnAction(e->{
-        if(input.getText()!="0")
+        Button eight = new Button();
+        GridPane.setConstraints(eight,5,7);
+        eight.setText("8");
+        eight.setOnAction(e->{
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"8");
         }
         else input.setText("8");
         });
-        Eight.setFont(new Font("Arial", 30));
-        Nine = new Button();
-        GridPane.setConstraints(Nine,10,7);
-        Nine.setFont(new Font("Arial", 30));
-        Nine.setText("9");
-        Nine.setOnAction(e->{
+        eight.setFont(new Font("Arial", 30));
+        Button nine = new Button();
+        GridPane.setConstraints(nine,10,7);
+        nine.setFont(new Font("Arial", 30));
+        nine.setText("9");
+        nine.setOnAction(e->{
         if(input.getText()!="0")
         {
             input.setText(input.getText()+"9");
@@ -368,7 +351,7 @@ public class Main extends Application implements Calculator  {
         layout.setHgap(10);
         layout.setVgap(12);
 
-        layout.getChildren().addAll(input,Equal,Add,Divide,Subtrac,Multiply,ClearALL,Del,Point,Zero,One,Two,Three,Four,Five,Six,Seven,Eight,Nine);
+        layout.getChildren().addAll(input, equal, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
         Scene scene=new Scene(layout,450,550);
         layout.setStyle("-fx-background-color: #111213");
         primaryStage.setScene(scene);
