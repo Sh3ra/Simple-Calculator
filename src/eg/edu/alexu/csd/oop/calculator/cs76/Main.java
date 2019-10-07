@@ -6,12 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.Dictionary;
 
 import static javafx.application.Application.launch;
 
 
-public class Main extends Application implements EventHandler<ActionEvent>, Calculator  {
+public class Main extends Application implements Calculator  {
     @Override
     public void input(String s) {
 
@@ -51,25 +54,45 @@ public class Main extends Application implements EventHandler<ActionEvent>, Calc
         launch(args);
     }
     Button Equal;
+    Button Add;
+    Button Subtrac;
+    Button Multiply;
+    Button Divide;
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Calculator");
         Equal=new Button();
         Equal.setText("=");
-        Equal.setOnAction(this);
-        StackPane layout=new StackPane();
-        layout.getChildren().add(Equal);
+        Equal.setOnAction(e -> {
+
+        });
+        Add=new Button();
+        Add.setText("+");
+        Add.setOnAction(e -> {
+
+        });
+        Subtrac=new Button();
+        Subtrac.setText("-");
+        Subtrac.setOnAction(e -> {
+
+        });
+        Multiply=new Button();
+        Multiply.setText("X");
+        Multiply.setOnAction(e -> {
+
+        });
+        Divide=new Button();
+        Divide.setText("/");
+        Divide.setOnAction(e -> {
+
+        });
+        VBox layout=new VBox(20);
+        layout.getChildren().addAll(Equal,Add,Divide,Subtrac,Multiply);
         Scene scene=new Scene(layout,450,550);
         layout.setStyle("-fx-background-color: #111213");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    @Override
-    public void handle(ActionEvent event) {
-        if(event.getSource()==Equal)
-        {
 
-        }
-    }
 }
