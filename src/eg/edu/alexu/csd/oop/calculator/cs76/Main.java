@@ -1,9 +1,6 @@
 package eg.edu.alexu.csd.oop.calculator.cs76;
 
-import com.sun.org.apache.bcel.internal.generic.ALOAD;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
@@ -13,52 +10,62 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 
-import java.math.BigInteger;
-import java.util.Dictionary;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static javafx.application.Application.launch;
 
 
 public class Main extends Application implements Calculator  {
     private String res;
+    private AtomicBoolean firstNegative=new AtomicBoolean(false);
+    private AtomicBoolean secondNegative=new AtomicBoolean(false);
+    private AtomicBoolean OperatorHere= new AtomicBoolean(false);
     @Override
     public void input(String s) {
         String[] arr;
-        if(s.contains("+"))
-        {
-            arr = s.split("\\+", 2);
-        }
-        else if(s.contains("-"))
-            arr=s.split("-",2);
-        else if(s.contains("X"))
-            arr=s.split("X",2);
-        else if (s.contains("/"))
-        arr=s.split("/",2);
-        else {
-            res=s;
-            return;
-        }
-        double a=Double.parseDouble(arr[0]) ;
-        double b=Double.parseDouble(arr[1]) ;
-        double re;
-        if(s.contains("+"))
-        {
-            re=a+b;
-            res=Double.toString(re);
-        }
-        else if(s.contains("-"))
-        {
-            re=a-b;
-            res=Double.toString(re);
-        }
-        else if(s.contains("X"))
-        {
-            re=a*b;
-            res=Double.toString(re);
-        }else if(s.contains("/"))
-        {
-            re=a/b;
-            res=Double.toString(re);
+        boolean n_n=false;
+        if(OperatorHere.get()) {
+            if (s.contains("+")) {
+                arr = s.split("\\+", 2);
+            } else if (s.contains("X"))
+                arr = s.split("X", 2);
+            else if (s.contains("/"))
+                arr = s.split("/", 2);
+            else{
+                if(!firstNegative.get())
+                arr = s.split("-", 2);
+                else {
+                    String temp ="";
+                    for(int i=1;i<s.length();i++)
+                        temp+=s.charAt(i);
+                    s=temp;
+                    arr=s.split("-",2);
+                    n_n=true;
+                }
+
+            }
+
+            double a = Double.parseDouble(arr[0]);
+            double b = Double.parseDouble(arr[1]);
+            double re;
+            if(n_n)
+            {
+                a*=-1;
+                n_n=false;
+            }
+            if (s.contains("+")) {
+                re = a + b;
+                res = Double.toString(re);
+            } else if (s.contains("X")) {
+                re = a * b;
+                res = Double.toString(re);
+            } else if (s.contains("/")) {
+                re = a / b;
+                res = Double.toString(re);
+            }
+            else {
+                    re=a-b;
+                    res=Double.toString(re);
+            }
         }
     }
 
@@ -98,6 +105,7 @@ public class Main extends Application implements Calculator  {
 
     @Override
     public void start(Stage primaryStage) {
+
         primaryStage.setTitle("Calculator");
         Label input=new Label("0");
         input.setMinWidth(Region.USE_PREF_SIZE);
@@ -110,13 +118,26 @@ public class Main extends Application implements Calculator  {
         Button clearALL = new Button("AC");
         clearALL.setFont(new Font("Arial", 20));
         GridPane.setConstraints(clearALL,0,4);
-        clearALL.setOnAction(e->input.setText("0"));
+        clearALL.setOnAction(e->{input.setText("0");
+        OperatorHere.set(false);
+        firstNegative.set(false);
+        secondNegative.set(false);
+        });
         Button del = new Button("Del");
         del.setFont(new Font("Arial", 20));
         GridPane.setConstraints(del,5,4);
         del.setOnAction(e->{
             if(!input.getText().equals(""))
             {
+                if(OperatorHere.get())
+                {
+                    if(input.getText().charAt(input.getText().length()-1)=='+'||input.getText().charAt(input.getText().length()-1)=='X'||input.getText().charAt(input.getText().length()-1)=='/')
+                        OperatorHere.set(false);
+                    else if(input.getText().charAt(input.getText().length()-1)=='-'&&secondNegative.get()&&(input.getText().charAt(input.getText().length()-2)=='+'||input.getText().charAt(input.getText().length()-2)=='X'||input.getText().charAt(input.getText().length()-2)=='/'||input.getText().charAt(input.getText().length()-2)=='-'))
+                        secondNegative.set(false);
+                    else if(input.getText().charAt(input.getText().length()-1)=='-'&&!secondNegative.get())
+                        OperatorHere.set(false);
+                }
                 String temp="";
                 for(int i=0;i<input.getText().length()-1;i++)
                 {
@@ -144,8 +165,10 @@ public class Main extends Application implements Calculator  {
         equal.setText("=");
         equal.setFont(new Font("Arial", 30));
         equal.setOnAction(e -> {
+
             if(input.getText().charAt(input.getText().length()-1)=='+'||input.getText().charAt(input.getText().length()-1)=='-'||input.getText().charAt(input.getText().length()-1)=='X'||input.getText().charAt(input.getText().length()-1)=='/')
                 AlertBox.display("Hey","Where is the second operand!?");
+            else if(!OperatorHere.get());
             else if(input.getText().contains("/"))
             {
                 int index=0;
@@ -170,12 +193,22 @@ public class Main extends Application implements Calculator  {
                 {
                     input(input.getText());
                     input.setText(getResult());
+                    OperatorHere.set(false);
+                    firstNegative.set(false);
+                    secondNegative.set(false);
+                    if(input.getText().charAt(0)=='-')
+                        firstNegative.set(true);
                 }
                 else AlertBox.display("MATH ERROR","ARE YOU KIDDING ME!!!!");
             }
             else {
                 input(input.getText());
                 input.setText(getResult());
+                OperatorHere.set(false);
+                firstNegative.set(false);
+                secondNegative.set(false);
+                if(input.getText().charAt(0)=='-')
+                    firstNegative.set(true);
             }
         });
         Button add = new Button();
@@ -183,8 +216,9 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(add,15,13);
         add.setText("+");
         add.setOnAction(e -> {
-            if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
+            if (!(OperatorHere).get())
             {
+                OperatorHere.set(true);
                 if(input.getText().charAt(input.getText().length()-1)=='.')
                     input.setText(input.getText()+"0+");
                 else input.setText(input.getText()+"+");
@@ -196,8 +230,9 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(subtrac,15,10);
         subtrac.setText("-");
         subtrac.setOnAction(e -> {
-            if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
+            if (!(OperatorHere).get())
             {
+                OperatorHere.set(true);
                 if(input.getText().charAt(input.getText().length()-1)=='.')
                     input.setText(input.getText()+"0-");
                 else input.setText(input.getText()+"-");
@@ -209,8 +244,9 @@ public class Main extends Application implements Calculator  {
         multiply.setText("X");
         multiply.setFont(new Font("Arial", 30));
         multiply.setOnAction(e -> {
-            if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
+            if (!(OperatorHere).get())
             {
+                OperatorHere.set(true);
                 if(input.getText().charAt(input.getText().length()-1)=='.')
                     input.setText(input.getText()+"0X");
                 else input.setText(input.getText()+"X");
@@ -221,8 +257,9 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(divide,15,4);
         divide.setText("/");
         divide.setOnAction(e -> {
-            if (!(input.getText().contains("+")||input.getText().contains("-")||input.getText().contains("X")||input.getText().contains("/")))
+            if (!(OperatorHere).get())
             {
+                OperatorHere.set(true);
                 if(input.getText().charAt(input.getText().length()-1)=='.')
                     input.setText(input.getText()+"0/");
                 else input.setText(input.getText()+"/");
@@ -345,13 +382,62 @@ public class Main extends Application implements Calculator  {
         }
         else input.setText("9");
         });
+        Button negative=new Button("+/-");
+        negative.setFont(new Font("Arial", 23));
+        GridPane.setConstraints(negative,0,16);
+        negative.setOnAction(e->{
+            if(!OperatorHere.get()){
+                String temp = "";
+                if(!firstNegative.get()) {
+                    temp+="-";
+                    firstNegative.set(true);
+                   for (int i = 0; i < input.getText().length(); i++) {
+                       temp += input.getText().charAt(i);
+                   }
+               }
+                else {
+                    firstNegative.set(false);
+                    for (int i = 1; i < input.getText().length(); i++) {
+                        temp += input.getText().charAt(i);
+                    }
+                }
+                input.setText(temp);
+            }else {
+                int index=0;
+                String temp="";
+                for(int i=0;i<input.getText().length();i++)
+                {
+                    if(i!=0&&(input.getText().charAt(i)=='+'||input.getText().charAt(i)=='-'||input.getText().charAt(i)=='X'||input.getText().charAt(i)=='/'))
+                    {
+                        temp+=input.getText().charAt(i);
+                         index = i;
+                        break;
+                    }
+                    temp+=input.getText().charAt(i);
+                }
+                if(!secondNegative.get())
+                {
+                    secondNegative.set(true);
+                    temp+="-";
+                }
+                else {
+                    secondNegative.set(false);
+                    index++;
+                }
+                for(int i=index+1;i<input.getText().length();i++) {
+                    temp += input.getText().charAt(i);
+                }
+                input.setText(temp);
+            }
+
+        });
 
         GridPane layout=new GridPane();
         layout.setPadding(new Insets(10,10,10,10));
         layout.setHgap(10);
         layout.setVgap(12);
 
-        layout.getChildren().addAll(input, equal, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
+        layout.getChildren().addAll(input, negative,equal, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
         Scene scene=new Scene(layout,450,550);
         layout.setStyle("-fx-background-color: #111213");
         primaryStage.setScene(scene);
@@ -359,13 +445,13 @@ public class Main extends Application implements Calculator  {
     }
 
     private boolean decimal_checker(String text) {
-        int c=0;
+        boolean c=false;
         boolean a=false;
         if(text.contains("+")||text.contains("-")||text.contains("X")||text.contains("/"))
         {
             for(int i=0;i<text.length();i++)
             {
-                if(text.charAt(i)=='+'||text.charAt(i)=='-'||text.charAt(i)=='X'||text.charAt(i)=='/')
+                if((text.charAt(i)=='+'||text.charAt(i)=='X'||text.charAt(i)=='/')||(text.charAt(i)=='-'&&i!=0))
                 {
                     a=true;
                 }
@@ -382,9 +468,9 @@ public class Main extends Application implements Calculator  {
             {
                 if(text.charAt(i)=='.')
                 {
-                    c++;
+                    c=true;
                 }
-                if(c==1)
+                if(c)
                     return false;
             }
         }
