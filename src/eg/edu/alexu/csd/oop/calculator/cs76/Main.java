@@ -70,6 +70,22 @@ public class Main extends Application implements Calculator  {
 
     @Override
     public String getResult() {
+        if(res.charAt(0)=='-'){
+            boolean check=false;
+            for (int i=1;i<res.length();i++)
+            {
+                if (res.charAt(i)!='0'&&res.charAt(i)!='.')
+                {
+                    check=true;
+                    break;
+                }
+            }
+            if(!check)res="0";
+        }
+        double a=Double.parseDouble(res);
+        int b=(int)a;
+        if(a/b==1)
+            res=Integer.toString(b);
         return res;
     }
 
@@ -128,6 +144,7 @@ public class Main extends Application implements Calculator  {
         OperatorHere.set(false);
         firstNegative.set(false);
         secondNegative.set(false);
+        equation.setText("");
         });
         Button del = new Button("Del");
         del.setFont(new Font("Arial", 20));
@@ -158,13 +175,16 @@ public class Main extends Application implements Calculator  {
         point.setFont(new Font("Arial", 30));
         GridPane.setConstraints(point,10,16);
         point.setOnAction(e->{
-            if(input.getText().charAt(input.getText().length()-1)=='+'||input.getText().charAt(input.getText().length()-1)=='-'||input.getText().charAt(input.getText().length()-1)=='X'||input.getText().charAt(input.getText().length()-1)=='/')
-            {
-                input.setText(input.getText()+"0.");
+            if(input.getText().length()<12) {
+                if (input.getText().charAt(input.getText().length() - 1) == '+' || input.getText().charAt(input.getText().length() - 1) == '-' || input.getText().charAt(input.getText().length() - 1) == 'X' || input.getText().charAt(input.getText().length() - 1) == '/') {
+                    input.setText(input.getText() + "0.");
+                } else if (decimal_checker(input.getText()))
+                    input.setText(input.getText() + ".");
+                else AlertBox.display("Mate", "How many decimal points do you expect in a number!?");
             }
-            else if(decimal_checker(input.getText()))
-                input.setText(input.getText()+".");
-            else AlertBox.display("Mate","How many decimal points do you expect in a number!?");
+            else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         Button equal = new Button();
         GridPane.setConstraints(equal,15,16);
@@ -223,55 +243,64 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(add,15,13);
         add.setText("+");
         add.setOnAction(e -> {
-            if (!(OperatorHere).get())
-            {
-                OperatorHere.set(true);
-                if(input.getText().charAt(input.getText().length()-1)=='.')
-                    input.setText(input.getText()+"0+");
-                else input.setText(input.getText()+"+");
+            if(input.getText().length()<12) {
+                if (!(OperatorHere).get()) {
+                    OperatorHere.set(true);
+                    if (input.getText().charAt(input.getText().length() - 1) == '.')
+                        input.setText(input.getText() + "0+");
+                    else input.setText(input.getText() + "+");
+                } else AlertBox.display("Dude", "One Operation at a time");
             }
-            else AlertBox.display("Dude","One Operation at a time");
+            else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         Button subtrac = new Button();
         subtrac.setFont(new Font("Arial", 30));
         GridPane.setConstraints(subtrac,15,10);
         subtrac.setText("-");
         subtrac.setOnAction(e -> {
-            if (!(OperatorHere).get())
-            {
-                OperatorHere.set(true);
-                if(input.getText().charAt(input.getText().length()-1)=='.')
-                    input.setText(input.getText()+"0-");
-                else input.setText(input.getText()+"-");
+            if(input.getText().length()<12) {
+                if (!(OperatorHere).get()) {
+                    OperatorHere.set(true);
+                    if (input.getText().charAt(input.getText().length() - 1) == '.')
+                        input.setText(input.getText() + "0-");
+                    else input.setText(input.getText() + "-");
+                } else AlertBox.display("Dude", "One Operation at a time");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
             }
-            else AlertBox.display("Dude","One Operation at a time");
         });
         Button multiply = new Button();
         GridPane.setConstraints(multiply,15,7);
         multiply.setText("X");
         multiply.setFont(new Font("Arial", 30));
         multiply.setOnAction(e -> {
-            if (!(OperatorHere).get())
-            {
-                OperatorHere.set(true);
-                if(input.getText().charAt(input.getText().length()-1)=='.')
-                    input.setText(input.getText()+"0X");
-                else input.setText(input.getText()+"X");
+            if(input.getText().length()<12) {
+                if (!(OperatorHere).get()) {
+                    OperatorHere.set(true);
+                    if (input.getText().charAt(input.getText().length() - 1) == '.')
+                        input.setText(input.getText() + "0X");
+                    else input.setText(input.getText() + "X");
+                } else AlertBox.display("Dude", "One Operation at a time");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
             }
-            else AlertBox.display("Dude","One Operation at a time");
         });
         Button divide = new Button();
         GridPane.setConstraints(divide,15,4);
         divide.setText("/");
         divide.setOnAction(e -> {
-            if (!(OperatorHere).get())
-            {
-                OperatorHere.set(true);
-                if(input.getText().charAt(input.getText().length()-1)=='.')
-                    input.setText(input.getText()+"0/");
-                else input.setText(input.getText()+"/");
+            if(input.getText().length()<12) {
+                if (!(OperatorHere).get()) {
+                    OperatorHere.set(true);
+                    if (input.getText().charAt(input.getText().length() - 1) == '.')
+                        input.setText(input.getText() + "0/");
+                    else input.setText(input.getText() + "/");
+                } else AlertBox.display("Dude", "One Operation at a time");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
             }
-            else AlertBox.display("Dude","One Operation at a time");
         });
         divide.setFont(new Font("Arial", 30));
         Button zero = new Button();
@@ -279,53 +308,64 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(zero,5,16);
         zero.setText("0");
         zero.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"0");
-        }
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "0");
+                }
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         Button one = new Button();
         GridPane.setConstraints(one,0,13);
         one.setText("1");
         one.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"1");
-        }
-        else input.setText("1");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "1");
+                } else input.setText("1");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         one.setFont(new Font("Arial", 30));
         Button two = new Button();
         GridPane.setConstraints(two,5,13);
         two.setText("2");
         two.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"2");
-        }
-        else input.setText("2");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "2");
+                } else input.setText("2");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         two.setFont(new Font("Arial", 30));
         Button three = new Button();
         GridPane.setConstraints(three,10,13);
         three.setText("3");
         three.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"3");
-        }
-        else input.setText("3");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "3");
+                } else input.setText("3");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         three.setFont(new Font("Arial", 30));
         Button four = new Button();
         four.setText("4");
         GridPane.setConstraints(four,0,10);
         four.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"4");
-        }
-        else input.setText("4");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "4");
+                } else input.setText("4");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         four.setFont(new Font("Arial", 30));
         Button five = new Button();
@@ -333,43 +373,51 @@ public class Main extends Application implements Calculator  {
         five.setText("5");
         five.setFont(new Font("Arial", 30));
         five.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"5");
-        }
-        else input.setText("5");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "5");
+                } else input.setText("5");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         Button six = new Button();
         six.setFont(new Font("Arial", 30));
         GridPane.setConstraints(six,10,10);
         six.setText("6");
         six.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"6");
-        }
-        else input.setText("6");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "6");
+                } else input.setText("6");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         Button seven = new Button();
         GridPane.setConstraints(seven,0,7);
         seven.setText("7");
         seven.setFont(new Font("Arial", 30));
         seven.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"7");
-        }
-        else input.setText("7");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "7");
+                } else input.setText("7");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         Button eight = new Button();
         GridPane.setConstraints(eight,5,7);
         eight.setText("8");
         eight.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"8");
-        }
-        else input.setText("8");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "8");
+                } else input.setText("8");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         eight.setFont(new Font("Arial", 30));
         Button nine = new Button();
@@ -377,60 +425,61 @@ public class Main extends Application implements Calculator  {
         nine.setFont(new Font("Arial", 30));
         nine.setText("9");
         nine.setOnAction(e->{
-        if(!input.getText().equals("0"))
-        {
-            input.setText(input.getText()+"9");
-        }
-        else input.setText("9");
+            if(input.getText().length()<12) {
+                if (!input.getText().equals("0")) {
+                    input.setText(input.getText() + "9");
+                } else input.setText("9");
+            }else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
         Button negative=new Button("+/-");
         negative.setFont(new Font("Arial", 23));
         GridPane.setConstraints(negative,0,16);
         negative.setOnAction(e->{
-            if(!OperatorHere.get()){
-                StringBuilder temp = new StringBuilder();
-                if(!firstNegative.get()) {
-                    temp.append("-");
-                    firstNegative.set(true);
-                   for (int i = 0; i < input.getText().length(); i++) {
-                       temp.append(input.getText().charAt(i));
-                   }
-               }
-                else {
-                    firstNegative.set(false);
-                    for (int i = 1; i < input.getText().length(); i++) {
+            if(input.getText().length()<12) {
+                if (!OperatorHere.get()) {
+                    StringBuilder temp = new StringBuilder();
+                    if (!firstNegative.get()) {
+                        temp.append("-");
+                        firstNegative.set(true);
+                        for (int i = 0; i < input.getText().length(); i++) {
+                            temp.append(input.getText().charAt(i));
+                        }
+                    } else {
+                        firstNegative.set(false);
+                        for (int i = 1; i < input.getText().length(); i++) {
+                            temp.append(input.getText().charAt(i));
+                        }
+                    }
+                    input.setText(temp.toString());
+                } else {
+                    int index = 0;
+                    StringBuilder temp = new StringBuilder();
+                    for (int i = 0; i < input.getText().length(); i++) {
+                        if (i != 0 && (input.getText().charAt(i) == '+' || input.getText().charAt(i) == '-' || input.getText().charAt(i) == 'X' || input.getText().charAt(i) == '/')) {
+                            temp.append(input.getText().charAt(i));
+                            index = i;
+                            break;
+                        }
                         temp.append(input.getText().charAt(i));
                     }
-                }
-                input.setText(temp.toString());
-            }else {
-                int index=0;
-                StringBuilder temp= new StringBuilder();
-                for(int i=0;i<input.getText().length();i++)
-                {
-                    if(i!=0&&(input.getText().charAt(i)=='+'||input.getText().charAt(i)=='-'||input.getText().charAt(i)=='X'||input.getText().charAt(i)=='/'))
-                    {
-                        temp.append(input.getText().charAt(i));
-                         index = i;
-                        break;
+                    if (!secondNegative.get()) {
+                        secondNegative.set(true);
+                        temp.append("-");
+                    } else {
+                        secondNegative.set(false);
+                        index++;
                     }
-                    temp.append(input.getText().charAt(i));
+                    for (int i = index + 1; i < input.getText().length(); i++) {
+                        temp.append(input.getText().charAt(i));
+                    }
+                    input.setText(temp.toString());
                 }
-                if(!secondNegative.get())
-                {
-                    secondNegative.set(true);
-                    temp.append("-");
-                }
-                else {
-                    secondNegative.set(false);
-                    index++;
-                }
-                for(int i=index+1;i<input.getText().length();i++) {
-                    temp.append(input.getText().charAt(i));
-                }
-                input.setText(temp.toString());
             }
-
+            else {
+                AlertBox.display("MaxSize","You have reached your Max number of characters");
+            }
         });
 
         GridPane layout=new GridPane();
