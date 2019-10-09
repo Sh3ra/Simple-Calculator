@@ -34,10 +34,10 @@ public class Main extends Application implements Calculator  {
                 if(!firstNegative.get())
                 arr = s.split("-", 2);
                 else {
-                    String temp ="";
+                    StringBuilder temp = new StringBuilder();
                     for(int i=1;i<s.length();i++)
-                        temp+=s.charAt(i);
-                    s=temp;
+                        temp.append(s.charAt(i));
+                    s= temp.toString();
                     arr=s.split("-",2);
                     n_n=true;
                 }
@@ -50,7 +50,6 @@ public class Main extends Application implements Calculator  {
             if(n_n)
             {
                 a*=-1;
-                n_n=false;
             }
             if (s.contains("+")) {
                 re = a + b;
@@ -105,13 +104,20 @@ public class Main extends Application implements Calculator  {
 
     @Override
     public void start(Stage primaryStage) {
-
         primaryStage.setTitle("Calculator");
+        Label equation=new Label();
+        equation.setMinWidth(Region.USE_PREF_SIZE);
+        equation.setAlignment(Pos.CENTER_LEFT);
+        GridPane.setConstraints(equation,0,0,16,1);
+        equation.setMaxWidth(400);
+        equation.setFont(new Font("Arial", 15));
+        equation.setTextFill(Color.web("#ffffff"));
+
         Label input=new Label("0");
         input.setMinWidth(Region.USE_PREF_SIZE);
         input.setAlignment(Pos.CENTER_RIGHT);
         GridPane.setConstraints(input,0,1,16,1);
-        input.setMaxWidth(450);
+        input.setMaxWidth(400);
         input.setFont(new Font("Arial", 50));
         input.setTextFill(Color.web("#ffffff"));
 
@@ -138,14 +144,14 @@ public class Main extends Application implements Calculator  {
                     else if(input.getText().charAt(input.getText().length()-1)=='-'&&!secondNegative.get())
                         OperatorHere.set(false);
                 }
-                String temp="";
+                StringBuilder temp= new StringBuilder();
                 for(int i=0;i<input.getText().length()-1;i++)
                 {
-                    temp=temp+input.getText().charAt(i);
+                    temp.append(input.getText().charAt(i));
                 }
-                if(temp.equals(""))
-                    temp+="0";
-                input.setText(temp);
+                if(temp.toString().equals(""))
+                    temp.append("0");
+                input.setText(temp.toString());
             }
         });
         Button point = new Button(".");
@@ -165,10 +171,9 @@ public class Main extends Application implements Calculator  {
         equal.setText("=");
         equal.setFont(new Font("Arial", 30));
         equal.setOnAction(e -> {
-
             if(input.getText().charAt(input.getText().length()-1)=='+'||input.getText().charAt(input.getText().length()-1)=='-'||input.getText().charAt(input.getText().length()-1)=='X'||input.getText().charAt(input.getText().length()-1)=='/')
                 AlertBox.display("Hey","Where is the second operand!?");
-            else if(!OperatorHere.get());
+            else if(!OperatorHere.get()) AlertBox.display("duh!", "-_-");
             else if(input.getText().contains("/"))
             {
                 int index=0;
@@ -192,6 +197,7 @@ public class Main extends Application implements Calculator  {
                 if(checker)
                 {
                     input(input.getText());
+                    equation.setText(input.getText());
                     input.setText(getResult());
                     OperatorHere.set(false);
                     firstNegative.set(false);
@@ -202,13 +208,14 @@ public class Main extends Application implements Calculator  {
                 else AlertBox.display("MATH ERROR","ARE YOU KIDDING ME!!!!");
             }
             else {
-                input(input.getText());
-                input.setText(getResult());
-                OperatorHere.set(false);
-                firstNegative.set(false);
-                secondNegative.set(false);
-                if(input.getText().charAt(0)=='-')
-                    firstNegative.set(true);
+                    input(input.getText());
+                    equation.setText(input.getText());
+                    input.setText(getResult());
+                    OperatorHere.set(false);
+                    firstNegative.set(false);
+                    secondNegative.set(false);
+                    if(input.getText().charAt(0)=='-')
+                        firstNegative.set(true);
             }
         });
         Button add = new Button();
@@ -281,57 +288,52 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(one,0,13);
         one.setText("1");
         one.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"1");
         }
         else input.setText("1");
         });
         one.setFont(new Font("Arial", 30));
-
         Button two = new Button();
         GridPane.setConstraints(two,5,13);
         two.setText("2");
         two.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"2");
         }
         else input.setText("2");
         });
         two.setFont(new Font("Arial", 30));
-
         Button three = new Button();
         GridPane.setConstraints(three,10,13);
         three.setText("3");
         three.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"3");
         }
         else input.setText("3");
         });
         three.setFont(new Font("Arial", 30));
-
         Button four = new Button();
         four.setText("4");
         GridPane.setConstraints(four,0,10);
         four.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"4");
         }
         else input.setText("4");
         });
         four.setFont(new Font("Arial", 30));
-
         Button five = new Button();
         GridPane.setConstraints(five,5,10);
         five.setText("5");
         five.setFont(new Font("Arial", 30));
-
         five.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"5");
         }
@@ -339,11 +341,10 @@ public class Main extends Application implements Calculator  {
         });
         Button six = new Button();
         six.setFont(new Font("Arial", 30));
-
         GridPane.setConstraints(six,10,10);
         six.setText("6");
         six.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"6");
         }
@@ -354,7 +355,7 @@ public class Main extends Application implements Calculator  {
         seven.setText("7");
         seven.setFont(new Font("Arial", 30));
         seven.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"7");
         }
@@ -376,7 +377,7 @@ public class Main extends Application implements Calculator  {
         nine.setFont(new Font("Arial", 30));
         nine.setText("9");
         nine.setOnAction(e->{
-        if(input.getText()!="0")
+        if(!input.getText().equals("0"))
         {
             input.setText(input.getText()+"9");
         }
@@ -387,59 +388,60 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(negative,0,16);
         negative.setOnAction(e->{
             if(!OperatorHere.get()){
-                String temp = "";
+                StringBuilder temp = new StringBuilder();
                 if(!firstNegative.get()) {
-                    temp+="-";
+                    temp.append("-");
                     firstNegative.set(true);
                    for (int i = 0; i < input.getText().length(); i++) {
-                       temp += input.getText().charAt(i);
+                       temp.append(input.getText().charAt(i));
                    }
                }
                 else {
                     firstNegative.set(false);
                     for (int i = 1; i < input.getText().length(); i++) {
-                        temp += input.getText().charAt(i);
+                        temp.append(input.getText().charAt(i));
                     }
                 }
-                input.setText(temp);
+                input.setText(temp.toString());
             }else {
                 int index=0;
-                String temp="";
+                StringBuilder temp= new StringBuilder();
                 for(int i=0;i<input.getText().length();i++)
                 {
                     if(i!=0&&(input.getText().charAt(i)=='+'||input.getText().charAt(i)=='-'||input.getText().charAt(i)=='X'||input.getText().charAt(i)=='/'))
                     {
-                        temp+=input.getText().charAt(i);
+                        temp.append(input.getText().charAt(i));
                          index = i;
                         break;
                     }
-                    temp+=input.getText().charAt(i);
+                    temp.append(input.getText().charAt(i));
                 }
                 if(!secondNegative.get())
                 {
                     secondNegative.set(true);
-                    temp+="-";
+                    temp.append("-");
                 }
                 else {
                     secondNegative.set(false);
                     index++;
                 }
                 for(int i=index+1;i<input.getText().length();i++) {
-                    temp += input.getText().charAt(i);
+                    temp.append(input.getText().charAt(i));
                 }
-                input.setText(temp);
+                input.setText(temp.toString());
             }
 
         });
 
         GridPane layout=new GridPane();
         layout.setPadding(new Insets(10,10,10,10));
-        layout.setHgap(10);
+        layout.setHgap(7);
         layout.setVgap(12);
 
-        layout.getChildren().addAll(input, negative,equal, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
-        Scene scene=new Scene(layout,450,550);
+        layout.getChildren().addAll(input,equation, negative,equal, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
+        Scene scene=new Scene(layout,Region.USE_PREF_SIZE,Region.USE_PREF_SIZE);
         layout.setStyle("-fx-background-color: #111213");
+        primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
