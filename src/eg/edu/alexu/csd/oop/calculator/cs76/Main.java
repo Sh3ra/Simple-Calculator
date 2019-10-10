@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -19,6 +21,11 @@ public class Main extends Application implements Calculator  {
     private AtomicBoolean firstNegative=new AtomicBoolean(false);
     private AtomicBoolean secondNegative=new AtomicBoolean(false);
     private AtomicBoolean OperatorHere= new AtomicBoolean(false);
+    private int curr=-1;
+    private int pointer=0;
+    private String[] answer = new String[5];
+    private String[] eq=new String[5];
+
     @Override
     public void input(String s) {
         String[] arr;
@@ -91,21 +98,32 @@ public class Main extends Application implements Calculator  {
 
     @Override
     public String current() {
-        return null;
+        pointer=curr;
+        return Integer.toString(curr);
     }
 
     @Override
     public String prev() {
-        return null;
+        return Integer.toString(pointer);
     }
 
     @Override
     public String next() {
-        return null;
+        return Integer.toString(pointer);
     }
 
     @Override
     public void save() {
+        try (PrintWriter out = new PrintWriter("data1.txt")) {
+            for(int i=0;i<5;i++){
+                out.println(eq[i]);
+                out.println(answer[i]);
+            }
+            out.println(curr);
+        }
+        catch (FileNotFoundException e)
+        {
+        }
 
     }
 
@@ -171,6 +189,7 @@ public class Main extends Application implements Calculator  {
                 input.setText(temp.toString());
             }
         });
+
         Button point = new Button(".");
         point.setFont(new Font("Arial", 30));
         GridPane.setConstraints(point,10,16);
@@ -186,6 +205,61 @@ public class Main extends Application implements Calculator  {
                 AlertBox.display("MaxSize","You have reached your Max number of characters");
             }
         });
+
+        Button prev=new Button("Prev");
+
+        Button next=new Button("Next");
+        next.setFont(new Font("Arial", 20));
+        GridPane.setConstraints(next,20,7);
+        next.setDisable(true);
+        next.setOnAction(e-> {
+            String t=next();
+        pointer=(pointer+1+5)%5;
+        input.setText(answer[pointer]);
+        equation.setText(eq[pointer]);
+        if(answer[(pointer+1+5)%5]==null)
+            next.setDisable(true);
+        prev.setDisable(false);
+        });
+
+        prev.setFont(new Font("Arial", 20));
+        GridPane.setConstraints(prev,20,4);
+        prev.setDisable(true);
+        prev.setOnAction(e-> {
+            String t=prev();
+            pointer=(pointer-1+5)%5;
+            next.setDisable(false);
+            input.setText(answer[pointer]);
+            equation.setText(eq[pointer]);
+            if(answer[(pointer-1+5)%5]==null)
+                prev.setDisable(true);
+        });
+
+        AtomicBoolean prevEnabler= new AtomicBoolean(false);
+
+        Button save=new Button("Save");
+        save.setDisable(true);
+        save.setFont(new Font("Arial", 20));
+        GridPane.setConstraints(save,20,10);
+        save.setOnAction(e->{
+            save();
+        });
+
+
+        Button curren=new Button("Current");
+        curren.setFont(new Font("Arial", 15));
+        GridPane.setConstraints(curren,10,4);
+        curren.setDisable(true);
+        curren.setOnAction(e->{
+            String t=current();
+            int index=Integer.parseInt(t);
+            if(prevEnabler.get())
+            prev.setDisable(false);
+            input.setText(answer[index]);
+            equation.setText(eq[index]);
+            next.setDisable(true);
+        });
+
         Button equal = new Button();
         GridPane.setConstraints(equal,15,16);
         equal.setText("=");
@@ -224,6 +298,18 @@ public class Main extends Application implements Calculator  {
                     secondNegative.set(false);
                     if(input.getText().charAt(0)=='-')
                         firstNegative.set(true);
+                    curr++;
+                    curr=curr%5;
+                    pointer=curr;
+                    answer[curr]=input.getText();
+                    eq[curr]=equation.getText();
+                    curren.setDisable(false);
+                    if(curr>0)
+                        prevEnabler.set(true);
+                    if(prevEnabler.get())
+                        prev.setDisable(false);
+                    save.setDisable(false);
+                 //   System.out.println(curr);
                 }
                 else AlertBox.display("MATH ERROR","ARE YOU KIDDING ME!!!!");
             }
@@ -236,8 +322,20 @@ public class Main extends Application implements Calculator  {
                     secondNegative.set(false);
                     if(input.getText().charAt(0)=='-')
                         firstNegative.set(true);
+                curr++;
+                curr=curr%5;
+                pointer=curr;
+                answer[curr]=input.getText();
+                eq[curr]=equation.getText();
+                    curren.setDisable(false);
+                if(curr>0)
+                    prevEnabler.set(true);
+                if(prevEnabler.get())
+                    prev.setDisable(false);
+                save.setDisable(false);
             }
         });
+
         Button add = new Button();
         add.setFont(new Font("Arial", 30));
         GridPane.setConstraints(add,15,13);
@@ -487,7 +585,7 @@ public class Main extends Application implements Calculator  {
         layout.setHgap(7);
         layout.setVgap(12);
 
-        layout.getChildren().addAll(input,equation, negative,equal, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
+        layout.getChildren().addAll(input,equation, negative,equal,curren,prev,next,save, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
         Scene scene=new Scene(layout,Region.USE_PREF_SIZE,Region.USE_PREF_SIZE);
         layout.setStyle("-fx-background-color: #111213");
         primaryStage.setResizable(false);
