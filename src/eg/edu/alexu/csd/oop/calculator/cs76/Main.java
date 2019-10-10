@@ -10,8 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -121,16 +120,47 @@ public class Main extends Application implements Calculator  {
             }
             out.println(curr);
         }
-        catch (FileNotFoundException e)
+        catch (FileNotFoundException ignored)
         {
         }
 
     }
 
     @Override
-    public void load() {
+    public void load() throws IOException {
+        File file = new File("data1.txt");
 
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String st;
+        int counter=0,index=0;
+        while (true){
+            st = br.readLine();
+            if(index==5){
+                curr=Integer.parseInt(st);
+                pointer=curr;
+                break;
+            }
+            else if(counter%2==0) {
+                if(st=="null")
+                    eq[index]="a";
+                else{
+                    eq[index]=st;
+                    counter++;
+                }
+            }
+        else {
+                if(st=="null")
+                    answer[index]="a";
+                else{
+                    answer[index]=st;
+                    index++;
+                    counter++;
+                }
+            }
     }
+}
+
 
     public static void main(String[] args) {
         launch(args);
@@ -231,11 +261,13 @@ public class Main extends Application implements Calculator  {
             next.setDisable(false);
             input.setText(answer[pointer]);
             equation.setText(eq[pointer]);
-            if(answer[(pointer-1+5)%5]==null)
+            if(answer[(pointer-1+5)%5]==null||answer[(pointer-1+5)%5]=="a")
                 prev.setDisable(true);
         });
 
         AtomicBoolean prevEnabler= new AtomicBoolean(false);
+        Button curren=new Button("Current");
+
 
         Button save=new Button("Save");
         save.setDisable(true);
@@ -244,9 +276,21 @@ public class Main extends Application implements Calculator  {
         save.setOnAction(e->{
             save();
         });
+        Button load=new Button("Load");
+        load.setFont(new Font("Arial", 20));
+        GridPane.setConstraints(load,20,13);
+        load.setOnAction(e->{
+            try {
+                load();
+                curren.setDisable(false);
+                prev.setDisable(false);
+                next.setDisable(false);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
 
 
-        Button curren=new Button("Current");
         curren.setFont(new Font("Arial", 15));
         GridPane.setConstraints(curren,10,4);
         curren.setDisable(true);
@@ -585,7 +629,7 @@ public class Main extends Application implements Calculator  {
         layout.setHgap(7);
         layout.setVgap(12);
 
-        layout.getChildren().addAll(input,equation, negative,equal,curren,prev,next,save, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
+        layout.getChildren().addAll(input,equation, negative,equal,curren,load,prev,next,save, add, divide, subtrac, multiply, clearALL, del, point, zero, one, two, three, four, five, six, seven, eight, nine);
         Scene scene=new Scene(layout,Region.USE_PREF_SIZE,Region.USE_PREF_SIZE);
         layout.setStyle("-fx-background-color: #111213");
         primaryStage.setResizable(false);

@@ -1,4 +1,8 @@
 package eg.edu.alexu.csd.oop.calculator.cs76;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public interface Calculator {
 /* Take input from user */
 public void input(String s);
@@ -16,5 +20,5 @@ public String next();
 /* Save in file the last 5 done Operations */
 public void save();
 /* Load from file the saved operations */
-public void load();
+public void load() throws IOException;
 }
