@@ -47,9 +47,7 @@ public class Main extends Application implements Calculator  {
                     arr=s.split("-",2);
                     n_n=true;
                 }
-
             }
-
             double a = Double.parseDouble(arr[0]);
             double b = Double.parseDouble(arr[1]);
             double re;
@@ -129,9 +127,7 @@ public class Main extends Application implements Calculator  {
     @Override
     public void load() throws IOException {
         File file = new File("data1.txt");
-
         BufferedReader br = new BufferedReader(new FileReader(file));
-
         String st;
         int counter=0,index=0;
         while (true){
@@ -142,21 +138,14 @@ public class Main extends Application implements Calculator  {
                 break;
             }
             else if(counter%2==0) {
-                if(st=="null")
-                    eq[index]="a";
-                else{
+
                     eq[index]=st;
                     counter++;
-                }
             }
         else {
-                if(st=="null")
-                    answer[index]="a";
-                else{
                     answer[index]=st;
                     index++;
                     counter++;
-                }
             }
     }
 }
@@ -247,7 +236,7 @@ public class Main extends Application implements Calculator  {
         pointer=(pointer+1+5)%5;
         input.setText(answer[pointer]);
         equation.setText(eq[pointer]);
-        if(answer[(pointer+1+5)%5]==null)
+        if(answer[(pointer+1+5)%5]==null||(pointer+1+5)%5==(curr+6)%5)
             next.setDisable(true);
         prev.setDisable(false);
         });
@@ -261,8 +250,9 @@ public class Main extends Application implements Calculator  {
             next.setDisable(false);
             input.setText(answer[pointer]);
             equation.setText(eq[pointer]);
-            if(answer[(pointer-1+5)%5]==null||answer[(pointer-1+5)%5]=="a")
+            if(answer[(pointer-1+5)%5]==null||(pointer-1+5)%5==curr)
                 prev.setDisable(true);
+            System.out.println(answer[(pointer-1+5)%5]);
         });
 
         AtomicBoolean prevEnabler= new AtomicBoolean(false);
@@ -273,9 +263,7 @@ public class Main extends Application implements Calculator  {
         save.setDisable(true);
         save.setFont(new Font("Arial", 20));
         GridPane.setConstraints(save,20,10);
-        save.setOnAction(e->{
-            save();
-        });
+        save.setOnAction(e-> save());
         Button load=new Button("Load");
         load.setFont(new Font("Arial", 20));
         GridPane.setConstraints(load,20,13);
@@ -285,6 +273,7 @@ public class Main extends Application implements Calculator  {
                 curren.setDisable(false);
                 prev.setDisable(false);
                 next.setDisable(false);
+                curren.fire();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -353,7 +342,7 @@ public class Main extends Application implements Calculator  {
                     if(prevEnabler.get())
                         prev.setDisable(false);
                     save.setDisable(false);
-                 //   System.out.println(curr);
+                    next.setDisable(true);
                 }
                 else AlertBox.display("MATH ERROR","ARE YOU KIDDING ME!!!!");
             }
@@ -377,6 +366,7 @@ public class Main extends Application implements Calculator  {
                 if(prevEnabler.get())
                     prev.setDisable(false);
                 save.setDisable(false);
+                next.setDisable(true);
             }
         });
 
