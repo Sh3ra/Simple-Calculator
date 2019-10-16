@@ -24,6 +24,7 @@ public class Main extends Application implements Calculator  {
     private int pointer=0;
     private String[] answer = new String[5];
     private String[] eq=new String[5];
+    int historySize=0;
 
     @Override
     public void input(String s) {
@@ -90,6 +91,8 @@ public class Main extends Application implements Calculator  {
         int b=(int)a;
         if(a/b==1)
             res=Integer.toString(b);
+        historySize++;
+
         return res;
     }
 
@@ -112,7 +115,11 @@ public class Main extends Application implements Calculator  {
     @Override
     public void save() {
         try (PrintWriter out = new PrintWriter("data1.txt")) {
-            for(int i=0;i<5;i++){
+            int size=5;
+            if(historySize<5)
+                size=historySize;
+            out.println(size);
+            for(int i=0;i<size;i++){
                 out.println(eq[i]);
                 out.println(answer[i]);
             }
@@ -129,15 +136,14 @@ public class Main extends Application implements Calculator  {
         File file = new File("data1.txt");
         BufferedReader br = new BufferedReader(new FileReader(file));
         String st;
+        st=br.readLine();
+        int size=Integer.parseInt(st);
         int counter=0,index=0;
-        while (true){
+        size*=2;
+
+        while (size-->=0){
             st = br.readLine();
-            if(index==5){
-                curr=Integer.parseInt(st);
-                pointer=curr;
-                break;
-            }
-            else if(counter%2==0) {
+            if(counter%2==0) {
 
                     eq[index]=st;
                     counter++;
@@ -147,7 +153,10 @@ public class Main extends Application implements Calculator  {
                     index++;
                     counter++;
             }
+
     }
+        curr=Integer.parseInt(st);
+        pointer=curr;
 }
 
 
@@ -252,7 +261,6 @@ public class Main extends Application implements Calculator  {
             equation.setText(eq[pointer]);
             if(answer[(pointer-1+5)%5]==null||(pointer-1+5)%5==curr)
                 prev.setDisable(true);
-            System.out.println(answer[(pointer-1+5)%5]);
         });
 
         AtomicBoolean prevEnabler= new AtomicBoolean(false);
@@ -297,7 +305,9 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(equal,15,16);
         equal.setText("=");
         equal.setFont(new Font("Arial", 30));
+        AtomicBoolean newNum= new AtomicBoolean(false);
         equal.setOnAction(e -> {
+
             if(input.getText().charAt(input.getText().length()-1)=='+'||input.getText().charAt(input.getText().length()-1)=='-'||input.getText().charAt(input.getText().length()-1)=='X'||input.getText().charAt(input.getText().length()-1)=='/')
                 AlertBox.display("Hey","Where is the second operand!?");
             else if(!OperatorHere.get()) AlertBox.display("duh!", "-_-");
@@ -343,6 +353,7 @@ public class Main extends Application implements Calculator  {
                         prev.setDisable(false);
                     save.setDisable(false);
                     next.setDisable(true);
+                    newNum.set(true);
                 }
                 else AlertBox.display("MATH ERROR","ARE YOU KIDDING ME!!!!");
             }
@@ -367,7 +378,9 @@ public class Main extends Application implements Calculator  {
                     prev.setDisable(false);
                 save.setDisable(false);
                 next.setDisable(true);
+                newNum.set(true);
             }
+
         });
 
         Button add = new Button();
@@ -377,6 +390,9 @@ public class Main extends Application implements Calculator  {
         add.setOnAction(e -> {
             if(input.getText().length()<12) {
                 if (!(OperatorHere).get()) {
+                    if(newNum.get()) {
+                        newNum.set(false);
+                    }
                     OperatorHere.set(true);
                     if (input.getText().charAt(input.getText().length() - 1) == '.')
                         input.setText(input.getText() + "0+");
@@ -394,6 +410,9 @@ public class Main extends Application implements Calculator  {
         subtrac.setOnAction(e -> {
             if(input.getText().length()<12) {
                 if (!(OperatorHere).get()) {
+                    if(newNum.get()) {
+                        newNum.set(false);
+                    }
                     OperatorHere.set(true);
                     if (input.getText().charAt(input.getText().length() - 1) == '.')
                         input.setText(input.getText() + "0-");
@@ -410,6 +429,9 @@ public class Main extends Application implements Calculator  {
         multiply.setOnAction(e -> {
             if(input.getText().length()<12) {
                 if (!(OperatorHere).get()) {
+                    if(newNum.get()) {
+                        newNum.set(false);
+                    }
                     OperatorHere.set(true);
                     if (input.getText().charAt(input.getText().length() - 1) == '.')
                         input.setText(input.getText() + "0X");
@@ -425,6 +447,9 @@ public class Main extends Application implements Calculator  {
         divide.setOnAction(e -> {
             if(input.getText().length()<12) {
                 if (!(OperatorHere).get()) {
+                    if(newNum.get()) {
+                        newNum.set(false);
+                    }
                     OperatorHere.set(true);
                     if (input.getText().charAt(input.getText().length() - 1) == '.')
                         input.setText(input.getText() + "0/");
@@ -441,6 +466,11 @@ public class Main extends Application implements Calculator  {
         zero.setText("0");
         zero.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "0");
                 }
@@ -453,6 +483,11 @@ public class Main extends Application implements Calculator  {
         one.setText("1");
         one.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "1");
                 } else input.setText("1");
@@ -466,6 +501,11 @@ public class Main extends Application implements Calculator  {
         two.setText("2");
         two.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "2");
                 } else input.setText("2");
@@ -479,6 +519,11 @@ public class Main extends Application implements Calculator  {
         three.setText("3");
         three.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "3");
                 } else input.setText("3");
@@ -492,6 +537,11 @@ public class Main extends Application implements Calculator  {
         GridPane.setConstraints(four,0,10);
         four.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "4");
                 } else input.setText("4");
@@ -506,6 +556,11 @@ public class Main extends Application implements Calculator  {
         five.setFont(new Font("Arial", 30));
         five.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "5");
                 } else input.setText("5");
@@ -519,6 +574,11 @@ public class Main extends Application implements Calculator  {
         six.setText("6");
         six.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "6");
                 } else input.setText("6");
@@ -532,6 +592,11 @@ public class Main extends Application implements Calculator  {
         seven.setFont(new Font("Arial", 30));
         seven.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "7");
                 } else input.setText("7");
@@ -544,6 +609,11 @@ public class Main extends Application implements Calculator  {
         eight.setText("8");
         eight.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "8");
                 } else input.setText("8");
@@ -558,6 +628,11 @@ public class Main extends Application implements Calculator  {
         nine.setText("9");
         nine.setOnAction(e->{
             if(input.getText().length()<12) {
+                if(newNum.get()) {
+                    newNum.set(false);
+                    input.setText("");
+                    equation.setText("");
+                }
                 if (!input.getText().equals("0")) {
                     input.setText(input.getText() + "9");
                 } else input.setText("9");
